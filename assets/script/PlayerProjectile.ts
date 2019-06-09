@@ -9,6 +9,7 @@ export default class ProjectileClass extends cc.Component {
     MAX_RANGE = 1000;
 
     isExist = false;
+    isSpecial = false;
 
     // LIFE-CYCLE CALLBACKS:
 

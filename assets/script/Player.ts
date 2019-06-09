@@ -13,6 +13,18 @@ export default class PlayerClass extends cc.Component {
     @property(cc.Prefab)
     playerProjectile: cc.Prefab = null;
 
+    @property(cc.Prefab)
+    specialProjectile: cc.Prefab = null;
+    specialAttack = false;
+    specialUsedCount = 0;
+    specialAttackHit = {
+        hit: false,
+        value: -1
+    }
+
+    @property([cc.Prefab])
+    changedProjectiles: cc.Prefab[] = new Array<cc.Prefab>(4);
+
     @property(cc.Node)
     canvasNode: cc.Node = null;
 
@@ -27,6 +39,24 @@ export default class PlayerClass extends cc.Component {
 
     @property(cc.SpriteFrame)
     halfHeart: cc.SpriteFrame = null;
+
+    @property(cc.SpriteFrame)
+    deadSprite: cc.SpriteFrame = null;
+
+    @property({
+        type: cc.AudioClip
+    })
+    attackingSound: cc.AudioClip = null;
+
+    @property({
+        type: cc.AudioClip
+    })
+    changedAttackSound: cc.AudioClip = null;
+
+    @property({
+        type: cc.AudioClip
+    })
+    damagingSound: cc.AudioClip = null;
 
     moveLeft = false;
     moveRight = false;
@@ -67,6 +97,14 @@ export default class PlayerClass extends cc.Component {
                 break;
             case cc.macro.KEY.q:
                 this.fire = true;
+                this.specialAttack = false;
+                break;
+            case cc.macro.KEY.e:
+                if (this.specialUsedCount < 3) {
+                    this.fire = true;
+                    this.specialAttack = true;
+                    this.specialUsedCount += 1;
+                }
                 break;
         }
     }
@@ -87,52 +125,50 @@ export default class PlayerClass extends cc.Component {
                 break;
             case cc.macro.KEY.q:
                 this.fire = false;
+                this.specialAttack = false;
+                break;
+            case cc.macro.KEY.e:
+                this.fire = false;
+                this.specialAttack = false;
                 break;
         }
     }
 
-    async renderDamage(target: EnemyProjectileClass | EnemyClass | BossProjectileClass) {
-        let distance = this.node.position.sub(target.node.position).mag();
-        if (distance < this.damageRadius) {
-            target.isExist = false;
-            target.node.stopAllActions();
+    async playerDamage(other: cc.Node) {
+        
+        if (!this.canvasNode.getComponent<GameClass>(GameClass).bossAppeared) {
+            let component = 
+            other.getComponent<EnemyProjectileClass>(EnemyProjectileClass) === null ?
+            other.getComponent<EnemyClass>(EnemyClass) :
+            other.getComponent<EnemyProjectileClass>(EnemyProjectileClass);
+            
+            component.isExist = false;
+            component.node.stopAllActions();
             this.node.stopAllActions();
-            this.hp -= target.damage;
-            target.node.destroy();
-            await this.showDamageAnimation(target);
+            this.hp -= component.damage;
+            component.node.destroy();
+            await this.showDamageAnimation(component);
+            this.playDamagingSound();
+            this.checkHp();
+            this.node.resumeAllActions();
+        } else {
+            let component = other
+            .getComponent<BossProjectileClass>(BossProjectileClass);
+            component.isExist = false;
+            component.node.stopAllActions();
+            this.node.stopAllActions();
+            this.hp -= component.damage;
+            component.node.destroy();
+            await this.showDamageAnimation(component);
+            this.playDamagingSound();
             this.checkHp();
             this.node.resumeAllActions();
         }
+        
     }
 
-    playerDamage() {
-        if (!this.canvasNode.getComponent<GameClass>(GameClass).bossAppeared) {
-            let enemyProjectiles = this.canvasNode.getComponent<GameClass>(GameClass)
-            .getComponentsInChildren<EnemyProjectileClass>(EnemyProjectileClass);
-            let enemies = this.canvasNode.getComponent<GameClass>(GameClass)
-            .getComponentsInChildren<EnemyClass>(EnemyClass);
-
-            for (let projectile of enemyProjectiles) {
-                if (projectile.isValid) {
-                    this.renderDamage(projectile);
-                }
-            }
-
-            for (let enemy of enemies) {
-                if (enemy.isValid) {
-                    this.renderDamage(enemy);
-                }
-            }
-        } else {
-            let bossProjectiles = this.canvasNode
-            .getComponentsInChildren<BossProjectileClass>(BossProjectileClass);
-            for (let projectile of bossProjectiles) {
-                if (projectile.isValid) {
-                    this.renderDamage(projectile);
-                }
-            }
-        }
-        
+    onCollisionEnter(other: cc.BoxCollider, self: cc.BoxCollider) {
+        this.playerDamage(other.node);
     }
 
     checkHp() {
@@ -163,6 +199,10 @@ export default class PlayerClass extends cc.Component {
             }
             if (this.hp < 0) {
                 this.heart1.destroy();
+                this.hp = 0;
+                this.node.stopAllActions();
+                this.node.getComponent<cc.Sprite>(cc.Sprite).spriteFrame = this.deadSprite;
+                this.canvasNode.getComponent<GameClass>(GameClass).gameOver();
             }
         }
     }
@@ -207,6 +247,18 @@ export default class PlayerClass extends cc.Component {
         }
     }
 
+    playAttackingSound() {
+        cc.audioEngine.playEffect(this.attackingSound, false);
+    }
+
+    playChangedAttackSound() {
+        cc.audioEngine.playEffect(this.changedAttackSound, false);
+    }
+
+    playDamagingSound() {
+        cc.audioEngine.playEffect(this.damagingSound, false);
+    }
+
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
@@ -241,12 +293,6 @@ export default class PlayerClass extends cc.Component {
             }
         }
 
-        /* if (this.moveLeft) {
-            this.node.x -= this.xSpeed * dt;
-        }
-        if (this.moveRight) {
-            this.node.x += this.xSpeed * dt;
-        } */
         if (this.moveUp) {
             this.node.y += this.ySpeed * dt;
         }
@@ -255,11 +301,21 @@ export default class PlayerClass extends cc.Component {
         }
 
         if (this.fire && !this.isFired) {
-            let projectile = cc.instantiate(this.playerProjectile);
+            let projectile = this.specialAttack ?
+            cc.instantiate(this.specialProjectile) :
+            cc.instantiate(this.playerProjectile);
+
             this.canvasNode.addChild(projectile);
             projectile.setPosition(this.node.x + 50, this.node.y);
             projectile.getComponent<ProjectileClass>(ProjectileClass).isExist = true;
+            projectile.getComponent<ProjectileClass>(ProjectileClass).isSpecial = 
+            this.specialAttack;
             this.isFired = true;
+            if (this.specialAttackHit.hit) {
+                this.playChangedAttackSound();
+            } else {
+                this.playAttackingSound();
+            }
         }
 
         if (this.node.x < -this.canvasNode.x + this.xOffset) {
@@ -276,6 +332,5 @@ export default class PlayerClass extends cc.Component {
             this.node.y = this.canvasNode.y - this.topYOffset;
         }
 
-        this.playerDamage();
     }
 }

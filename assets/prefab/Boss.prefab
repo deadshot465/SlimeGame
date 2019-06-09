@@ -28,10 +28,16 @@
       },
       {
         "__id__": 4
+      },
+      {
+        "__id__": 5
+      },
+      {
+        "__id__": 6
       }
     ],
     "_prefab": {
-      "__id__": 5
+      "__id__": 7
     },
     "_opacity": 255,
     "_color": {
@@ -73,7 +79,7 @@
     "_skewX": 0,
     "_skewY": 0,
     "_is3DNode": false,
-    "groupIndex": 0,
+    "groupIndex": 1,
     "_id": ""
   },
   {
@@ -131,9 +137,87 @@
       "__id__": 1
     },
     "_enabled": true,
+    "bossDeadSprite": {
+      "__uuid__": "91199f1b-0d42-48a1-a68a-4902ae114db8"
+    },
     "bossProjectile": {
       "__uuid__": "af8a2012-24cd-4492-ae3a-5ead90011729"
     },
+    "attackingSound": {
+      "__uuid__": "d6233282-ba89-405b-b93f-c7998b4bf0fc"
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.PolygonCollider",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "tag": 0,
+    "_offset": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 68
+    },
+    "points": [
+      {
+        "__type__": "cc.Vec2",
+        "x": -66,
+        "y": -11
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -51.1,
+        "y": -68.4
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 52,
+        "y": -69
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 66,
+        "y": -7
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 43,
+        "y": 32
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -2,
+        "y": 68
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": -41,
+        "y": 31
+      }
+    ],
+    "_id": ""
+  },
+  {
+    "__type__": "cc.Animation",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "_defaultClip": {
+      "__uuid__": "a764b6d5-882c-4dd2-87eb-7a1b203b0d54"
+    },
+    "_clips": [
+      {
+        "__uuid__": "a764b6d5-882c-4dd2-87eb-7a1b203b0d54"
+      }
+    ],
+    "playOnLoad": false,
     "_id": ""
   },
   {

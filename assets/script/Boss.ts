@@ -19,15 +19,23 @@ export default class BossClass extends cc.Component {
     targetPosition: cc.Vec2 = null;
 
     hp = 0;
-    baseHp = 300;
+    baseHp = 5000;
     hpFactor = 200;
     damageRadius = 60;
+
+    @property(cc.SpriteFrame)
+    bossDeadSprite: cc.SpriteFrame = null;
 
     @property(cc.Prefab)
     bossProjectile: cc.Prefab = null;
     projectileFired = false;
     fireInterval = 0.0;
     elapsedTime = 0.0;
+
+    @property({
+        type: cc.AudioClip
+    })
+    attackingSound: cc.AudioClip = null;
 
     bossFire(dt: any) {
         if (this.isExist) {
@@ -40,6 +48,7 @@ export default class BossClass extends cc.Component {
                 projectileComponent.isExist = true;
                 this.fireInterval = Math.random() * 9;
                 this.projectileFired = true;
+                this.playAttackingSound();
             } else {
                 this.elapsedTime += dt;
                 if (this.elapsedTime > this.fireInterval) {
@@ -50,18 +59,37 @@ export default class BossClass extends cc.Component {
         }
     }
 
-    async bossDamage() {
-        let playerProjectiles = this.canvasComponent
-        .getComponentsInChildren<ProjectileClass>(ProjectileClass);
-
-        for (let projectile of playerProjectiles) {
-            let distance = this.node.position.sub(projectile.node.position).mag();
-            if (distance < this.damageRadius) {
-                projectile.isExist = false;
-                projectile.node.stopAllActions();
-                projectile.node.destroy();
+    bossDamage(other: cc.Node) {
+        let component = other.getComponent<ProjectileClass>(ProjectileClass);
+        component.isExist = false;
+        component.node.stopAllActions();
+        component.node.destroy();
+        if (this.hp > 0) {
+            this.hp -= this.canvasComponent.score;
+            this.hp = Math.round(this.hp);
+            if (this.hp <= 0) {
+                this.bossDied();
             }
+            this.canvasComponent.bossHpLabel.string = `Boss HP: ${this.hp}`;
+        } else {
+            this.bossDied();
         }
+    }
+
+    onCollisionEnter(other: cc.PolygonCollider, self: cc.PolygonCollider) {
+        this.bossDamage(other.node);
+    }
+
+    playAttackingSound() {
+        cc.audioEngine.playEffect(this.attackingSound, false);
+    }
+
+    bossDied() {
+        this.hp = 0;
+        this.canvasComponent.bossHpLabel.string = `Boss HP: ${this.hp}`;
+        this.node.stopAllActions();
+        this.node.getComponent<cc.Sprite>(cc.Sprite).spriteFrame = this.bossDeadSprite;
+        this.canvasComponent.gameSuccess();
     }
 
     // LIFE-CYCLE CALLBACKS:
@@ -70,6 +98,8 @@ export default class BossClass extends cc.Component {
 
     start () {
         this.hp = this.baseHp + Math.random() * this.hpFactor;
+        this.hp = Math.round(this.hp);
+        this.canvasComponent.bossHpLabel.string = `Boss HP: ${this.hp}`;
     }
 
     update (dt) {
@@ -98,7 +128,6 @@ export default class BossClass extends cc.Component {
             }
 
             this.bossFire(dt);
-            this.bossDamage();
         }
     }
 }

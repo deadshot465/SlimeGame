@@ -13,7 +13,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "BossSprite",
+    "_name": "SpecialSprite_0",
     "_objFlags": 0,
     "_parent": null,
     "_children": [],
@@ -43,8 +43,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 150,
-      "height": 112
+      "width": 90,
+      "height": 34
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -53,13 +53,13 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 475.798,
-      "y": 218.505,
+      "x": 0,
+      "y": 0,
       "z": 0
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 1,
+      "x": -1,
       "y": 1,
       "z": 1
     },
@@ -73,7 +73,7 @@
     "_skewX": 0,
     "_skewY": 0,
     "_is3DNode": false,
-    "groupIndex": 3,
+    "groupIndex": 2,
     "_id": ""
   },
   {
@@ -88,7 +88,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "64b5f7d1-c4ac-4480-9df0-466be6b5691d"
+      "__uuid__": "5b9bebb7-59e1-41cd-84e4-405df422ae70"
     },
     "_type": 0,
     "_sizeMode": 1,
@@ -105,13 +105,14 @@
     "_id": ""
   },
   {
-    "__type__": "2ee98BlSINFqpiaJNeiGCwm",
+    "__type__": "8d7a8CjpLZPq7Z2kPdYZr8i",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 1
     },
     "_enabled": true,
+    "xSpeed": 500,
     "_id": ""
   },
   {
@@ -130,8 +131,8 @@
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 150,
-      "height": 112
+      "width": 90,
+      "height": 34
     },
     "_id": ""
   },
@@ -141,9 +142,9 @@
       "__id__": 1
     },
     "asset": {
-      "__uuid__": "af8a2012-24cd-4492-ae3a-5ead90011729"
+      "__id__": 0
     },
-    "fileId": "e94Q8hVlpKG5FU5/Owx0xM",
+    "fileId": "21Y/A6CwhJqqaqR6eue6jS",
     "sync": false
   }
 ]

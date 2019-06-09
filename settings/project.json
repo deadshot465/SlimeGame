@@ -2,7 +2,26 @@
   "assets-sort-type": "name",
   "collision-matrix": [
     [
+      false,
+      true,
+      null,
       true
+    ],
+    [
+      true,
+      false,
+      true
+    ],
+    [
+      false,
+      true,
+      false
+    ],
+    [
+      true,
+      false,
+      false,
+      false
     ]
   ],
   "design-resolution-height": 640,
@@ -21,7 +40,10 @@
   "fit-height": true,
   "fit-width": false,
   "group-list": [
-    "default"
+    "default",
+    "enemies",
+    "projectiles",
+    "enemy_projectiles"
   ],
   "last-module-event-record-time": 1559898216281,
   "simulator-orientation": false,
@@ -29,7 +51,6 @@
     "height": 640,
     "width": 960
   },
-  "start-scene": "current",
-  "use-customize-simulator": false,
+  "use-customize-simulator": true,
   "use-project-simulator-setting": false
 }

@@ -31,10 +31,13 @@
       },
       {
         "__id__": 5
+      },
+      {
+        "__id__": 6
       }
     ],
     "_prefab": {
-      "__id__": 6
+      "__id__": 7
     },
     "_opacity": 255,
     "_color": {
@@ -76,7 +79,7 @@
     "_skewX": 0,
     "_skewY": 0,
     "_is3DNode": false,
-    "groupIndex": 0,
+    "groupIndex": 1,
     "_id": ""
   },
   {
@@ -139,6 +142,9 @@
     "enemyProjectile": {
       "__uuid__": "9fd00e3d-6eef-48e9-91f7-b932bd4a23f3"
     },
+    "attackingSound": {
+      "__uuid__": "f11ad6cb-3e62-4ac5-95d2-83e147708b64"
+    },
     "_id": ""
   },
   {
@@ -158,6 +164,27 @@
       }
     ],
     "playOnLoad": false,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.BoxCollider",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "tag": 0,
+    "_offset": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_size": {
+      "__type__": "cc.Size",
+      "width": 82,
+      "height": 106
+    },
     "_id": ""
   },
   {

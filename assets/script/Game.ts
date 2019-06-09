@@ -20,11 +20,27 @@ export default class GameClass extends cc.Component {
     @property(cc.Label)
     scoreLabel: cc.Label = null;
     score = 0;
+    
+    @property(cc.RichText)
+    gameOverLabel: cc.RichText = null;
+
+    @property({
+        type: cc.AudioClip
+    })
+    gameOverSound: cc.AudioClip = null;
+
+    @property({
+        type: cc.AudioClip
+    })
+    gameSuccessSound: cc.AudioClip = null;
 
     @property(cc.Label)
     timerLabel: cc.Label = null;
     timePassed = 0;
     timeRemained = 60;
+
+    @property(cc.Label)
+    bossHpLabel: cc.Label = null;
 
     bossAppeared = false;
     elapsedTime = 0.0;
@@ -63,18 +79,56 @@ export default class GameClass extends cc.Component {
 
     getScore(score: number) {
         this.score += score;
-        this.scoreLabel.string = `Score: ${this.score}`;
+        this.scoreLabel.string = `Attack: ${this.score}`;
+    }
+
+    clearAllEnemies() {
+        let enemyProjectiles = this.node
+        .getComponentsInChildren<EnemyProjectileClass>(EnemyProjectileClass);
+        for (let projectile of enemyProjectiles) {
+            projectile.node.destroy();
+        }
+    
+        let enemies = this.node.getComponentsInChildren<EnemyClass>(EnemyClass);
+        for (let enemy of enemies) {
+            enemy.node.destroy();
+        }
+    }
+
+    gameOver() {
+        this.clearAllEnemies();
+        cc.director.pause();
+        this.gameOverLabel.enabled = true;
+        this.playGameOverSound();
+    }
+
+    playGameOverSound() {
+        cc.audioEngine.playEffect(this.gameOverSound, false);
+    }
+
+    gameSuccess() {
+        cc.director.pause();
+        this.playGameSuccessSound();
+    }
+
+    playGameSuccessSound() {
+        cc.audioEngine.playEffect(this.gameSuccessSound, false);
     }
 
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
+        cc.director.getCollisionManager().enabledDebugDraw = true;
+        cc.director.getCollisionManager().enabled = true;
+        cc.director.getCollisionManager().enabledDrawBoundingBox = true;
     }
 
     start () {
         let test = fetch('https://yesno.wtf/api')
         .then((value: Response) => value.json())
         .then((value: any) => console.log(JSON.stringify(value)));
+
+        this.gameOverLabel.enabled = false;
     }
 
     update (dt) {
@@ -97,16 +151,7 @@ export default class GameClass extends cc.Component {
                 this.timerLabel.string = `Time: ${this.timeRemained}`;
             } else {
                 this.bossAppeared = true;
-                let enemyProjectiles =
-                 this.node.getComponentsInChildren<EnemyProjectileClass>(EnemyProjectileClass);
-                for (let projectile of enemyProjectiles) {
-                    projectile.node.destroy();
-                }
-    
-                let enemies = this.node.getComponentsInChildren<EnemyClass>(EnemyClass);
-                for (let enemy of enemies) {
-                    enemy.node.destroy();
-                }
+                this.clearAllEnemies();
                 this.timePassed = 0;
 
                 let boss = cc.instantiate(this.boss);

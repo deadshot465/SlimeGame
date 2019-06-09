@@ -2,6 +2,7 @@ import GameClass from "./Game";
 import EnemyProjectileClass from "./EnemyProjectile";
 import ProjectileClass from "./PlayerProjectile";
 import { EnemyType } from "./EnemyType";
+import PlayerClass from "./Player";
 
 const {ccclass, property} = cc._decorator;
 
@@ -22,6 +23,11 @@ export default class EnemyClass extends cc.Component {
     @property(cc.Prefab)
     enemyProjectile: cc.Prefab = null;
 
+    @property({
+        type: cc.AudioClip
+    })
+    attackingSound: cc.AudioClip = null;
+
     blinkAnimation: cc.Animation = null;
 
     isExist = false;
@@ -35,7 +41,7 @@ export default class EnemyClass extends cc.Component {
     playerPosition: cc.Vec2;
     t = 0.0;
 
-    MAX_RANGE = -1000;
+    MAX_RANGE = -500;
 
     damageRadius = 60;
 
@@ -50,6 +56,7 @@ export default class EnemyClass extends cc.Component {
                 projectile.getComponent<EnemyProjectileClass>(EnemyProjectileClass).enemyType = this.enemyType;
                 this.fireInterval = Math.random() * 6;
                 this.projectileFired = true;
+                //this.playAttackingSound();
             } else {
                 this.elapsedTime += dt;
                 if (this.elapsedTime > this.fireInterval) {
@@ -60,39 +67,89 @@ export default class EnemyClass extends cc.Component {
         }
     }
 
-    async enemyDamage() {
-        let playerProjectiles = this.canvasComponent
-        .getComponentsInChildren<ProjectileClass>(ProjectileClass);
-        
-        for (let projectile of playerProjectiles) {
-            let distance = this.node.position.sub(projectile.node.position).mag();
-            if (distance < this.damageRadius) {
-                projectile.isExist = false;
-                projectile.node.stopAllActions();
-                projectile.node.destroy();
-                this.isExist = false;
-                this.node.stopAllActions();
-                if (this.blinkAnimation !== null) {
-                    await this.showBlink();
-                }
-                this.node.destroy();
+    async enemyDamage(other: cc.Node) {
+        let component = other
+        .getComponent<ProjectileClass>(ProjectileClass);
+        let playerComponent = this.canvasComponent.player
+            .getComponent<PlayerClass>(PlayerClass);
+        if (component.isSpecial) {
+            switch (this.enemyType) {
+                case EnemyType.WHITE:
+                    playerComponent.playerProjectile = playerComponent.changedProjectiles[0];
+                    playerComponent.specialAttackHit.value = 0;
+                    break;
+                case EnemyType.YELLOW:
+                    playerComponent.playerProjectile = playerComponent.changedProjectiles[1];
+                    playerComponent.specialAttackHit.value = 1;
+                    break;
+                case EnemyType.BLUE:
+                    playerComponent.playerProjectile = playerComponent.changedProjectiles[2];
+                    playerComponent.specialAttackHit.value = 2;
+                    break;
+                case EnemyType.RED:
+                    playerComponent.playerProjectile = playerComponent.changedProjectiles[3];
+                    playerComponent.specialAttackHit.value = 3;
+                    break;
+            }
+            playerComponent.specialAttackHit.hit = true;
+        }
+        component.isExist = false;
+        component.node.stopAllActions();
+        component.node.destroy();
+        this.isExist = false;
+        this.node.stopAllActions();
+        if (this.blinkAnimation !== null) {
+            await this.showBlink();
+        }
+        this.node.destroy();
 
-                switch (this.enemyType) {
-                    case EnemyType.WHITE:
-                        this.canvasComponent.getScore(10);
-                        break;
-                    case EnemyType.YELLOW:
-                        this.canvasComponent.getScore(20);
-                        break;
-                    case EnemyType.BLUE:
-                        this.canvasComponent.getScore(30);
-                        break;
-                    case EnemyType.RED:
-                        this.canvasComponent.getScore(40);
-                        break;
-                }
+        if (!playerComponent.specialAttackHit.hit) {
+            switch (this.enemyType) {
+                case EnemyType.WHITE:
+                    this.canvasComponent.getScore(5);
+                    break;
+                case EnemyType.YELLOW:
+                    this.canvasComponent.getScore(10);
+                    break;
+                case EnemyType.BLUE:
+                    this.canvasComponent.getScore(15);
+                    break;
+                case EnemyType.RED:
+                    this.canvasComponent.getScore(20);
+                    break;
+            }
+        } else {
+            switch (this.enemyType) {
+                case EnemyType.WHITE:
+                    this.canvasComponent.getScore(
+                        playerComponent.specialAttackHit.value === 0 ?
+                        10 : 0
+                    );
+                    break;
+                case EnemyType.YELLOW:
+                    this.canvasComponent.getScore(
+                        playerComponent.specialAttackHit.value === 1 ?
+                        30 : 0
+                    );
+                    break;
+                case EnemyType.BLUE:
+                    this.canvasComponent.getScore(
+                        playerComponent.specialAttackHit.value === 2 ?
+                        60 : 0
+                    );
+                    break;
+                case EnemyType.RED:
+                    this.canvasComponent.getScore(
+                        playerComponent.specialAttackHit.value === 3 ?
+                        100 : 0
+                    );
+                    break;
             }
         }
+    }
+
+    onCollisionEnter(other: cc.BoxCollider, self: cc.BoxCollider) {
+        this.enemyDamage(other.node);
     }
 
     showBlink(): Promise<any> {
@@ -102,6 +159,10 @@ export default class EnemyClass extends cc.Component {
                 resolve();
             });
         })
+    }
+
+    playAttackingSound() {
+        cc.audioEngine.playEffect(this.attackingSound, false);
     }
 
     // LIFE-CYCLE CALLBACKS:
@@ -151,7 +212,6 @@ export default class EnemyClass extends cc.Component {
             }
 
             this.enemyFire(dt);
-            this.enemyDamage();
         }
     }
 }
