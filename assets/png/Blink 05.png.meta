@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "f3dccc4d-b531-491b-9516-6e3e24fd5cbe",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "Blink 05": {
+      "ver": "1.0.4",
+      "uuid": "ea256ebc-1f02-4c86-b06f-6ab9f4259e8f",
+      "rawTextureUuid": "f3dccc4d-b531-491b-9516-6e3e24fd5cbe",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0.5,
+      "offsetY": -0.5,
+      "trimX": 12,
+      "trimY": 12,
+      "width": 97,
+      "height": 97,
+      "rawWidth": 120,
+      "rawHeight": 120,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

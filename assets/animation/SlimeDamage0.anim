@@ -1,0 +1,37 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "SlimeDamage0",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.11666666666666667,
+  "sample": 60,
+  "speed": 1,
+  "wrapMode": 1,
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {
+        "spriteFrame": [
+          {
+            "frame": 0,
+            "value": {
+              "__uuid__": "b30030a3-b8d3-4704-be04-494b668b7f14"
+            }
+          },
+          {
+            "frame": 0.05,
+            "value": {
+              "__uuid__": "6312ab80-cea1-4ba4-9f8c-775a1ac6a644"
+            }
+          },
+          {
+            "frame": 0.1,
+            "value": {
+              "__uuid__": "b6f2d8e8-ceed-44c7-b918-c352b7904be7"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "events": []
+}
