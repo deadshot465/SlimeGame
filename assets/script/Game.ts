@@ -24,6 +24,9 @@ export default class GameClass extends cc.Component {
     @property(cc.RichText)
     gameOverLabel: cc.RichText = null;
 
+    @property(cc.Node)
+    restartButton: cc.Node = null;
+
     @property({
         type: cc.AudioClip
     })
@@ -100,6 +103,7 @@ export default class GameClass extends cc.Component {
         cc.director.pause();
         this.gameOverLabel.enabled = true;
         this.playGameOverSound();
+        this.restartButton.active = true;
     }
 
     playGameOverSound() {
@@ -115,12 +119,19 @@ export default class GameClass extends cc.Component {
         cc.audioEngine.playEffect(this.gameSuccessSound, false);
     }
 
+    onRestartButtonClicked(event: cc.Event, customEventData: any) {
+        cc.director.loadScene('main');
+        this.gameOverLabel.enabled = false;
+        this.restartButton.active = false;
+        cc.director.resume();
+    }
+
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
-        cc.director.getCollisionManager().enabledDebugDraw = true;
+        cc.director.getCollisionManager().enabledDebugDraw = false;
         cc.director.getCollisionManager().enabled = true;
-        cc.director.getCollisionManager().enabledDrawBoundingBox = true;
+        cc.director.getCollisionManager().enabledDrawBoundingBox = false;
     }
 
     start () {

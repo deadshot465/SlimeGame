@@ -137,6 +137,9 @@
       "__id__": 1
     },
     "_enabled": true,
+    "bossHappySprite": {
+      "__uuid__": "a0bfc3c6-26fd-4995-9229-fb2e241c420c"
+    },
     "bossDeadSprite": {
       "__uuid__": "91199f1b-0d42-48a1-a68a-4902ae114db8"
     },

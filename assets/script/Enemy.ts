@@ -68,82 +68,84 @@ export default class EnemyClass extends cc.Component {
     }
 
     async enemyDamage(other: cc.Node) {
-        let component = other
-        .getComponent<ProjectileClass>(ProjectileClass);
-        let playerComponent = this.canvasComponent.player
+        if (this.isValid) {
+            let component = other
+            .getComponent<ProjectileClass>(ProjectileClass);
+            let playerComponent = this.canvasComponent.player
             .getComponent<PlayerClass>(PlayerClass);
-        if (component.isSpecial) {
-            switch (this.enemyType) {
-                case EnemyType.WHITE:
-                    playerComponent.playerProjectile = playerComponent.changedProjectiles[0];
-                    playerComponent.specialAttackHit.value = 0;
-                    break;
-                case EnemyType.YELLOW:
-                    playerComponent.playerProjectile = playerComponent.changedProjectiles[1];
-                    playerComponent.specialAttackHit.value = 1;
-                    break;
-                case EnemyType.BLUE:
-                    playerComponent.playerProjectile = playerComponent.changedProjectiles[2];
-                    playerComponent.specialAttackHit.value = 2;
-                    break;
-                case EnemyType.RED:
-                    playerComponent.playerProjectile = playerComponent.changedProjectiles[3];
-                    playerComponent.specialAttackHit.value = 3;
-                    break;
+            if (component.isSpecial) {
+                switch (this.enemyType) {
+                    case EnemyType.WHITE:
+                        playerComponent.playerProjectile = playerComponent.changedProjectiles[0];
+                        playerComponent.specialAttackHit.value = 0;
+                        break;
+                    case EnemyType.YELLOW:
+                        playerComponent.playerProjectile = playerComponent.changedProjectiles[1];
+                        playerComponent.specialAttackHit.value = 1;
+                        break;
+                    case EnemyType.BLUE:
+                        playerComponent.playerProjectile = playerComponent.changedProjectiles[2];
+                        playerComponent.specialAttackHit.value = 2;
+                        break;
+                    case EnemyType.RED:
+                        playerComponent.playerProjectile = playerComponent.changedProjectiles[3];
+                        playerComponent.specialAttackHit.value = 3;
+                        break;
+                }
+                playerComponent.specialAttackHit.hit = true;
             }
-            playerComponent.specialAttackHit.hit = true;
-        }
-        component.isExist = false;
-        component.node.stopAllActions();
-        component.node.destroy();
-        this.isExist = false;
-        this.node.stopAllActions();
-        if (this.blinkAnimation !== null) {
-            await this.showBlink();
-        }
-        this.node.destroy();
+            component.isExist = false;
+            component.node.stopAllActions();
+            component.node.destroy();
+            this.isExist = false;
+            this.node.stopAllActions();
+            if (this.blinkAnimation !== null) {
+                await this.showBlink();
+            }
+            this.node.destroy();
 
-        if (!playerComponent.specialAttackHit.hit) {
-            switch (this.enemyType) {
-                case EnemyType.WHITE:
-                    this.canvasComponent.getScore(5);
-                    break;
-                case EnemyType.YELLOW:
-                    this.canvasComponent.getScore(10);
-                    break;
-                case EnemyType.BLUE:
-                    this.canvasComponent.getScore(15);
-                    break;
-                case EnemyType.RED:
-                    this.canvasComponent.getScore(20);
-                    break;
-            }
-        } else {
-            switch (this.enemyType) {
-                case EnemyType.WHITE:
-                    this.canvasComponent.getScore(
-                        playerComponent.specialAttackHit.value === 0 ?
-                        10 : 0
-                    );
-                    break;
-                case EnemyType.YELLOW:
-                    this.canvasComponent.getScore(
-                        playerComponent.specialAttackHit.value === 1 ?
-                        30 : 0
-                    );
-                    break;
-                case EnemyType.BLUE:
-                    this.canvasComponent.getScore(
-                        playerComponent.specialAttackHit.value === 2 ?
-                        60 : 0
-                    );
-                    break;
-                case EnemyType.RED:
-                    this.canvasComponent.getScore(
-                        playerComponent.specialAttackHit.value === 3 ?
-                        100 : 0
-                    );
-                    break;
+            if (!playerComponent.specialAttackHit.hit) {
+                switch (this.enemyType) {
+                    case EnemyType.WHITE:
+                        this.canvasComponent.getScore(5);
+                        break;
+                    case EnemyType.YELLOW:
+                        this.canvasComponent.getScore(10);
+                        break;
+                    case EnemyType.BLUE:
+                        this.canvasComponent.getScore(15);
+                        break;
+                    case EnemyType.RED:
+                        this.canvasComponent.getScore(20);
+                        break;
+                }
+            } else {
+                switch (this.enemyType) {
+                    case EnemyType.WHITE:
+                        this.canvasComponent.getScore(
+                            playerComponent.specialAttackHit.value === 0 ?
+                            10 : 0
+                        );
+                        break;
+                    case EnemyType.YELLOW:
+                        this.canvasComponent.getScore(
+                            playerComponent.specialAttackHit.value === 1 ?
+                            30 : 0
+                        );
+                        break;
+                    case EnemyType.BLUE:
+                        this.canvasComponent.getScore(
+                            playerComponent.specialAttackHit.value === 2 ?
+                            60 : 0
+                        );
+                        break;
+                    case EnemyType.RED:
+                        this.canvasComponent.getScore(
+                            playerComponent.specialAttackHit.value === 3 ?
+                            100 : 0
+                        );
+                        break;
+                }
             }
         }
     }

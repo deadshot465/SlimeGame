@@ -24,6 +24,9 @@ export default class BossClass extends cc.Component {
     damageRadius = 60;
 
     @property(cc.SpriteFrame)
+    bossHappySprite: cc.SpriteFrame = null;
+
+    @property(cc.SpriteFrame)
     bossDeadSprite: cc.SpriteFrame = null;
 
     @property(cc.Prefab)
@@ -90,6 +93,10 @@ export default class BossClass extends cc.Component {
         this.node.stopAllActions();
         this.node.getComponent<cc.Sprite>(cc.Sprite).spriteFrame = this.bossDeadSprite;
         this.canvasComponent.gameSuccess();
+    }
+
+    bossVictory() {
+        this.node.getComponent<cc.Sprite>(cc.Sprite).spriteFrame = this.bossHappySprite;
     }
 
     // LIFE-CYCLE CALLBACKS:

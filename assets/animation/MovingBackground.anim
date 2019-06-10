@@ -1,0 +1,25 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "MovingBackground",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 8,
+  "sample": 15,
+  "speed": 1,
+  "wrapMode": 2,
+  "curveData": {
+    "props": {
+      "x": [
+        {
+          "frame": 0,
+          "value": 479.985
+        },
+        {
+          "frame": 8,
+          "value": -477.703
+        }
+      ]
+    }
+  },
+  "events": []
+}

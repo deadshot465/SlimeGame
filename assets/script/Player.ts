@@ -4,6 +4,7 @@ import EnemyProjectileClass from "./EnemyProjectile";
 import EnemyClass from "./Enemy";
 import { EnemyType } from "./EnemyType";
 import BossProjectileClass from "./BossProjectile";
+import BossClass from "./Boss";
 
 const {ccclass, property} = cc._decorator;
 
@@ -202,6 +203,9 @@ export default class PlayerClass extends cc.Component {
                 this.hp = 0;
                 this.node.stopAllActions();
                 this.node.getComponent<cc.Sprite>(cc.Sprite).spriteFrame = this.deadSprite;
+                if (this.canvasNode.getComponent<GameClass>(GameClass).bossAppeared) {
+                    this.canvasNode.getComponentInChildren<BossClass>(BossClass).bossVictory();
+                }
                 this.canvasNode.getComponent<GameClass>(GameClass).gameOver();
             }
         }
