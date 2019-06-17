@@ -18,7 +18,7 @@ export default class BossClass extends cc.Component {
     originalPosition: cc.Vec2 = null;
     targetPosition: cc.Vec2 = null;
 
-    hp = 0;
+    hp = 5000;
     baseHp = 5000;
     hpFactor = 200;
     damageRadius = 60;
@@ -28,6 +28,7 @@ export default class BossClass extends cc.Component {
 
     @property(cc.SpriteFrame)
     bossDeadSprite: cc.SpriteFrame = null;
+    isBossDead = false;
 
     @property(cc.Prefab)
     bossProjectile: cc.Prefab = null;
@@ -84,7 +85,10 @@ export default class BossClass extends cc.Component {
     }
 
     playAttackingSound() {
-        cc.audioEngine.playEffect(this.attackingSound, false);
+        //cc.audioEngine.playEffect(this.attackingSound, false);
+        cc.loader.loadRes('442827__qubodup__fireball', cc.AudioClip, (err, clip: cc.AudioClip) => {
+            cc.audioEngine.playEffect(clip, false);
+        });
     }
 
     bossDied() {
@@ -92,7 +96,7 @@ export default class BossClass extends cc.Component {
         this.canvasComponent.bossHpLabel.string = `Boss HP: ${this.hp}`;
         this.node.stopAllActions();
         this.node.getComponent<cc.Sprite>(cc.Sprite).spriteFrame = this.bossDeadSprite;
-        this.canvasComponent.gameSuccess();
+        this.isBossDead = true;
     }
 
     bossVictory() {
@@ -104,37 +108,49 @@ export default class BossClass extends cc.Component {
     // onLoad () {}
 
     start () {
-        this.hp = this.baseHp + Math.random() * this.hpFactor;
+        this.hp = this.baseHp;
         this.hp = Math.round(this.hp);
         this.canvasComponent.bossHpLabel.string = `Boss HP: ${this.hp}`;
     }
 
     update (dt) {
         if (this.isExist) {
-            if (!this.moveStarted) {
-                let targetY = Math.random() * 2 * this.canvasComponent.node.y - this.canvasComponent.node.y;
-                if (targetY > this.canvasComponent.node.y - this.topYOffset) {
-                    targetY = this.canvasComponent.node.y - this.topYOffset;
-                } else if (targetY < -this.canvasComponent.node.y + this.bottomYOffset) {
-                    targetY = -this.canvasComponent.node.y + this.bottomYOffset;
-                }
-                this.targetPosition = new cc.Vec2(this.node.x, targetY);
-                this.moveStarted = true;
-            } else {
-                if (this.targetPosition.y < this.node.y) {
-                    this.node.y -= this.bossSpeedFactor * dt;
-                    if (this.node.y < this.targetPosition.y) {
-                        this.moveStarted = false;
-                    }
+            if (this.isBossDead) {
+                if (this.node.opacity > 10) {
+                    let randomX = Math.floor(Math.random() * 40) - 20;
+                    randomX += this.canvasComponent.enemyOriginalX;
+                    this.node.x = randomX;
+                    this.node.opacity -= 50 * dt;
                 } else {
-                    this.node.y += this.bossSpeedFactor * dt;
-                    if (this.node.y > this.targetPosition.y) {
-                        this.moveStarted = false;
+                    this.node.stopAllActions();
+                    this.canvasComponent.gameSuccess();
+                }
+            } else {
+                if (!this.moveStarted) {
+                    let targetY = Math.random() * 2 * this.canvasComponent.node.y - this.canvasComponent.node.y;
+                    if (targetY > this.canvasComponent.node.y - this.topYOffset) {
+                        targetY = this.canvasComponent.node.y - this.topYOffset;
+                    } else if (targetY < -this.canvasComponent.node.y + this.bottomYOffset) {
+                        targetY = -this.canvasComponent.node.y + this.bottomYOffset;
+                    }
+                    this.targetPosition = new cc.Vec2(this.node.x, targetY);
+                    this.moveStarted = true;
+                } else {
+                    if (this.targetPosition.y < this.node.y) {
+                        this.node.y -= this.bossSpeedFactor * dt;
+                        if (this.node.y < this.targetPosition.y) {
+                            this.moveStarted = false;
+                        }
+                    } else {
+                        this.node.y += this.bossSpeedFactor * dt;
+                        if (this.node.y > this.targetPosition.y) {
+                            this.moveStarted = false;
+                        }
                     }
                 }
+    
+                this.bossFire(dt);
             }
-
-            this.bossFire(dt);
         }
     }
 }

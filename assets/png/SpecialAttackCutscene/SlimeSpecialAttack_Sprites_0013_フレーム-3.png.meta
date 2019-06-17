@@ -1,0 +1,32 @@
+{
+  "ver": "2.3.0",
+  "uuid": "643b6763-9dd6-4f71-9345-9eb432159460",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "platformSettings": {},
+  "subMetas": {
+    "SlimeSpecialAttack_Sprites_0013_フレーム-3": {
+      "ver": "1.0.4",
+      "uuid": "5171c95f-50ca-4be2-af17-bc2a643d9ef0",
+      "rawTextureUuid": "643b6763-9dd6-4f71-9345-9eb432159460",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": -441.5,
+      "offsetY": -67.5,
+      "trimX": 0,
+      "trimY": 261,
+      "width": 77,
+      "height": 253,
+      "rawWidth": 960,
+      "rawHeight": 640,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

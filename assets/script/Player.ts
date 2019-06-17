@@ -107,6 +107,12 @@ export default class PlayerClass extends cc.Component {
                     this.specialUsedCount += 1;
                 }
                 break;
+            case cc.macro.KEY.up:
+                this.moveUp = true;
+                break;
+            case cc.macro.KEY.down:
+                this.moveDown = true;
+                break;
         }
     }
 
@@ -131,6 +137,12 @@ export default class PlayerClass extends cc.Component {
             case cc.macro.KEY.e:
                 this.fire = false;
                 this.specialAttack = false;
+                break;
+            case cc.macro.KEY.up:
+                this.moveUp = false;
+                break;
+            case cc.macro.KEY.down:
+                this.moveDown = false;
                 break;
         }
     }
@@ -252,15 +264,30 @@ export default class PlayerClass extends cc.Component {
     }
 
     playAttackingSound() {
-        cc.audioEngine.playEffect(this.attackingSound, false);
+        //cc.audioEngine.playEffect(this.attackingSound, false);
+        cc.loader.loadRes('41530__jamius__slimeatk', cc.AudioClip, (err, clip: cc.AudioClip) => {
+            cc.audioEngine.playEffect(clip, false);
+        });
     }
 
     playChangedAttackSound() {
-        cc.audioEngine.playEffect(this.changedAttackSound, false);
+        //cc.audioEngine.playEffect(this.changedAttackSound, false);
+        cc.loader.loadRes('391660__jeckkech__projectile', cc.AudioClip, (err, clip: cc.AudioClip) => {
+            cc.audioEngine.playEffect(clip, false);
+        });
     }
 
     playDamagingSound() {
-        cc.audioEngine.playEffect(this.damagingSound, false);
+        //cc.audioEngine.playEffect(this.damagingSound, false);
+        cc.loader.loadRes('72624__anechoix__squish3', cc.AudioClip, (err, clip: cc.AudioClip) => {
+            cc.audioEngine.playEffect(clip, false);
+        });
+    }
+
+    playCutscene(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.canvasNode.getComponent<GameClass>(GameClass).playCutscene();
+        });
     }
 
     // LIFE-CYCLE CALLBACKS:
@@ -308,6 +335,10 @@ export default class PlayerClass extends cc.Component {
             let projectile = this.specialAttack ?
             cc.instantiate(this.specialProjectile) :
             cc.instantiate(this.playerProjectile);
+
+            if (this.specialAttack) {
+                this.playCutscene();
+            }
 
             this.canvasNode.addChild(projectile);
             projectile.setPosition(this.node.x + 50, this.node.y);

@@ -35,8 +35,8 @@
     "orientation": "portrait",
     "zip": false
   },
-  "startScene": "bc62e7c9-29cf-4c63-9e14-5e9799e72889",
-  "title": "Game2DProject",
+  "startScene": "a668f07f-0488-444e-8dec-0c95bcf05255",
+  "title": "SlimeGame",
   "webOrientation": "auto",
   "wechatgame": {
     "REMOTE_SERVER_ROOT": "",

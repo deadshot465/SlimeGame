@@ -69,6 +69,7 @@ export default class EnemyClass extends cc.Component {
 
     async enemyDamage(other: cc.Node) {
         if (this.isValid) {
+            this.node.getComponent<cc.BoxCollider>(cc.BoxCollider).enabled = false;
             let component = other
             .getComponent<ProjectileClass>(ProjectileClass);
             let playerComponent = this.canvasComponent.player
@@ -92,6 +93,7 @@ export default class EnemyClass extends cc.Component {
                         playerComponent.specialAttackHit.value = 3;
                         break;
                 }
+                this.canvasComponent.score = 0;
                 playerComponent.specialAttackHit.hit = true;
             }
             component.isExist = false;

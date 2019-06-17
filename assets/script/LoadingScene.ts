@@ -1,7 +1,7 @@
 const {ccclass, property} = cc._decorator;
 
 @ccclass
-export default class NewClass extends cc.Component {
+export default class LoadingSceneClass extends cc.Component {
 
     @property(cc.Node)
     backgroundNode: cc.Node = null;
@@ -39,6 +39,8 @@ export default class NewClass extends cc.Component {
         this.gameStart = true;
     }
 
+    sceneLoaded = false;
+
     onKeyUp(event: any) {
         if (this.manualOpened) {
             switch (event.keyCode) {
@@ -46,6 +48,9 @@ export default class NewClass extends cc.Component {
                     this.toggleManual();
                     break;
                 case cc.macro.KEY.e:
+                    this.toggleManual();
+                    break;
+                case cc.macro.KEY.escape:
                     this.toggleManual();
                     break;                    
             }
@@ -73,6 +78,7 @@ export default class NewClass extends cc.Component {
         this.mainTitle.opacity = 0;
         this.backgroundAnimation = this.backgroundNode.getComponent<cc.Animation>(cc.Animation);
         this.backgroundAnimation.enabled = false;
+        cc.director.preloadScene('main');
     }
 
     update (dt) {
@@ -110,15 +116,16 @@ export default class NewClass extends cc.Component {
             }
             let i = this.loadingSceneSlime.color.getR();
             while (i < 255 && !this.slimeColorChanged) {
-                console.log(this.loadingSceneSlime.color.getR());
                 let newColor = new cc.Color(i, i, i, this.loadingSceneSlime.color.getA());
                 this.loadingSceneSlime.color = newColor;
                 i += Math.ceil(dt);
             }
             this.slimeColorChanged = true;
-            this.loadingSceneSlime.x += 350 * dt;
-            if (this.loadingSceneSlime.x > this.slimeMoveMaxRange) {
+            if (this.loadingSceneSlime.x > this.slimeMoveMaxRange && !this.sceneLoaded) {
                 cc.director.loadScene('main');
+                this.sceneLoaded = true;
+            } else {
+                this.loadingSceneSlime.x += 350 * dt;
             }
         }
     }
