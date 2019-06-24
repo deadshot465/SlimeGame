@@ -5,21 +5,21 @@ export default class LoadingSceneClass extends cc.Component {
 
     @property(cc.Node)
     backgroundNode: cc.Node = null;
-    backgroundAnimation: cc.Animation = null;
+    private backgroundAnimation: cc.Animation = null;
 
     @property(cc.Node)
     mainTitle: cc.Node = null;
 
     @property(cc.Node)
     exclamation: cc.Node = null;
-    showExclamation = false;
+    private showExclamation = false;
 
     @property(cc.Node)
     whiteFlash: cc.Node = null;
 
     @property(cc.Node)
     loadingSceneSlime: cc.Node = null;
-    slimeColorChanged = false;
+    private slimeColorChanged = false;
 
     @property(cc.Node)
     startButton: cc.Node = null;
@@ -29,17 +29,17 @@ export default class LoadingSceneClass extends cc.Component {
 
     @property(cc.Node)
     manualBoard: cc.Node = null;
-    manualOpened = false;
+    private manualOpened = false;
 
-    elapsedTime = 0.0;
+    private elapsedTime = 0.0;
 
-    gameStart = false;
-    slimeMoveMaxRange = 500;
+    private gameStart = false;
+    private slimeMoveMaxRange = 500;
+    private sceneLoaded = false;
+
     onStartButtonClick(event: cc.Event, customEventData: any) {
         this.gameStart = true;
     }
-
-    sceneLoaded = false;
 
     onKeyUp(event: any) {
         if (this.manualOpened) {
@@ -79,6 +79,10 @@ export default class LoadingSceneClass extends cc.Component {
         this.backgroundAnimation = this.backgroundNode.getComponent<cc.Animation>(cc.Animation);
         this.backgroundAnimation.enabled = false;
         cc.director.preloadScene('main');
+        if (window["firstTimeManual"] === null || window["firstTimeManual"] === undefined)
+        {
+            window["firstTimeManual"] = false;
+        }
     }
 
     update (dt) {
@@ -107,6 +111,10 @@ export default class LoadingSceneClass extends cc.Component {
             this.loadingSceneSlime.active = true;
             this.startButton.active = true;
             this.manualButton.active = true;
+            if (!window["firstTimeManual"]) {
+                window["firstTimeManual"] = true;
+                this.toggleManual();
+            }
         }
 
         if (this.gameStart) {

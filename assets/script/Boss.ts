@@ -11,37 +11,37 @@ export default class BossClass extends cc.Component {
 
     isExist = false;
 
-    bossSpeedFactor = 100;
-    topYOffset = 230;
-    bottomYOffset = 40;
-    moveStarted = false;
     originalPosition: cc.Vec2 = null;
-    targetPosition: cc.Vec2 = null;
+    private bossSpeedFactor = 100;
+    private topYOffset = 230;
+    private bottomYOffset = 40;
+    private moveStarted = false;
+    private targetPosition: cc.Vec2 = null;
 
-    hp = 5000;
-    baseHp = 5000;
-    hpFactor = 200;
-    damageRadius = 60;
+    private hp = 5000;
+    private baseHp = 5000;
+    private hpFactor = 200;
+    private damageRadius = 60;
 
     @property(cc.SpriteFrame)
     bossHappySprite: cc.SpriteFrame = null;
 
     @property(cc.SpriteFrame)
     bossDeadSprite: cc.SpriteFrame = null;
-    isBossDead = false;
+    private isBossDead = false;
 
     @property(cc.Prefab)
     bossProjectile: cc.Prefab = null;
-    projectileFired = false;
-    fireInterval = 0.0;
-    elapsedTime = 0.0;
+    private projectileFired = false;
+    private fireInterval = 0.0;
+    private elapsedTime = 0.0;
 
     @property({
         type: cc.AudioClip
     })
     attackingSound: cc.AudioClip = null;
 
-    bossFire(dt: any) {
+    private bossFire(dt: any) {
         if (this.isExist) {
             if (!this.projectileFired) {
                 let projectile = cc.instantiate(this.bossProjectile);
@@ -63,13 +63,13 @@ export default class BossClass extends cc.Component {
         }
     }
 
-    bossDamage(other: cc.Node) {
+    private bossDamage(other: cc.Node) {
         let component = other.getComponent<ProjectileClass>(ProjectileClass);
         component.isExist = false;
         component.node.stopAllActions();
         component.node.destroy();
         if (this.hp > 0) {
-            this.hp -= this.canvasComponent.score;
+            this.hp -= this.canvasComponent.attackPoint;
             this.hp = Math.round(this.hp);
             if (this.hp <= 0) {
                 this.bossDied();
@@ -84,14 +84,14 @@ export default class BossClass extends cc.Component {
         this.bossDamage(other.node);
     }
 
-    playAttackingSound() {
+    private playAttackingSound() {
         //cc.audioEngine.playEffect(this.attackingSound, false);
         cc.loader.loadRes('442827__qubodup__fireball', cc.AudioClip, (err, clip: cc.AudioClip) => {
             cc.audioEngine.playEffect(clip, false);
         });
     }
 
-    bossDied() {
+    private bossDied() {
         this.hp = 0;
         this.canvasComponent.bossHpLabel.string = `Boss HP: ${this.hp}`;
         this.node.stopAllActions();

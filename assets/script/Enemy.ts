@@ -28,24 +28,24 @@ export default class EnemyClass extends cc.Component {
     })
     attackingSound: cc.AudioClip = null;
 
-    blinkAnimation: cc.Animation = null;
+    private blinkAnimation: cc.Animation = null;
 
     isExist = false;
-    projectileFired = false;
-    fireInterval = 0.0;
-    elapsedTime = 0.0;
+    private projectileFired = false;
+    private fireInterval = 0.0;
+    private elapsedTime = 0.0;
 
-    xSpeedFactor = 0.0;
-    ySpeedFactor = 0.0;
-    originalPosition: cc.Vec2;
-    playerPosition: cc.Vec2;
-    t = 0.0;
+    private xSpeedFactor = 0.0;
+    private ySpeedFactor = 0.0;
+    private originalPosition: cc.Vec2;
+    private playerPosition: cc.Vec2;
+    private t = 0.0;
 
-    MAX_RANGE = -500;
+    private MAX_RANGE = -500;
 
-    damageRadius = 60;
+    private damageRadius = 60;
 
-    enemyFire(dt: any) {
+    private enemyFire(dt: any) {
         if (this.isExist) {
             if (!this.projectileFired) {
                 let projectile = cc.instantiate(this.enemyProjectile);
@@ -67,7 +67,7 @@ export default class EnemyClass extends cc.Component {
         }
     }
 
-    async enemyDamage(other: cc.Node) {
+    private async enemyDamage(other: cc.Node) {
         if (this.isValid) {
             this.node.getComponent<cc.BoxCollider>(cc.BoxCollider).enabled = false;
             let component = other
@@ -77,24 +77,19 @@ export default class EnemyClass extends cc.Component {
             if (component.isSpecial) {
                 switch (this.enemyType) {
                     case EnemyType.WHITE:
-                        playerComponent.playerProjectile = playerComponent.changedProjectiles[0];
-                        playerComponent.specialAttackHit.value = 0;
+                        playerComponent.setSpecialProjectile(0, true);
                         break;
                     case EnemyType.YELLOW:
-                        playerComponent.playerProjectile = playerComponent.changedProjectiles[1];
-                        playerComponent.specialAttackHit.value = 1;
+                        playerComponent.setSpecialProjectile(1, true);
                         break;
                     case EnemyType.BLUE:
-                        playerComponent.playerProjectile = playerComponent.changedProjectiles[2];
-                        playerComponent.specialAttackHit.value = 2;
+                        playerComponent.setSpecialProjectile(2, true);
                         break;
                     case EnemyType.RED:
-                        playerComponent.playerProjectile = playerComponent.changedProjectiles[3];
-                        playerComponent.specialAttackHit.value = 3;
+                        playerComponent.setSpecialProjectile(3, true);
                         break;
                 }
-                this.canvasComponent.score = 0;
-                playerComponent.specialAttackHit.hit = true;
+                this.canvasComponent.attackPoint = 0;
             }
             component.isExist = false;
             component.node.stopAllActions();
@@ -109,40 +104,40 @@ export default class EnemyClass extends cc.Component {
             if (!playerComponent.specialAttackHit.hit) {
                 switch (this.enemyType) {
                     case EnemyType.WHITE:
-                        this.canvasComponent.getScore(5);
+                        this.canvasComponent.getAttackPoint(5);
                         break;
                     case EnemyType.YELLOW:
-                        this.canvasComponent.getScore(10);
+                        this.canvasComponent.getAttackPoint(10);
                         break;
                     case EnemyType.BLUE:
-                        this.canvasComponent.getScore(15);
+                        this.canvasComponent.getAttackPoint(15);
                         break;
                     case EnemyType.RED:
-                        this.canvasComponent.getScore(20);
+                        this.canvasComponent.getAttackPoint(20);
                         break;
                 }
             } else {
                 switch (this.enemyType) {
                     case EnemyType.WHITE:
-                        this.canvasComponent.getScore(
+                        this.canvasComponent.getAttackPoint(
                             playerComponent.specialAttackHit.value === 0 ?
                             10 : 0
                         );
                         break;
                     case EnemyType.YELLOW:
-                        this.canvasComponent.getScore(
+                        this.canvasComponent.getAttackPoint(
                             playerComponent.specialAttackHit.value === 1 ?
                             30 : 0
                         );
                         break;
                     case EnemyType.BLUE:
-                        this.canvasComponent.getScore(
+                        this.canvasComponent.getAttackPoint(
                             playerComponent.specialAttackHit.value === 2 ?
                             60 : 0
                         );
                         break;
                     case EnemyType.RED:
-                        this.canvasComponent.getScore(
+                        this.canvasComponent.getAttackPoint(
                             playerComponent.specialAttackHit.value === 3 ?
                             100 : 0
                         );
@@ -156,7 +151,7 @@ export default class EnemyClass extends cc.Component {
         this.enemyDamage(other.node);
     }
 
-    showBlink(): Promise<any> {
+    private showBlink(): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             let state = this.blinkAnimation.play('Blink', 0);
             this.blinkAnimation.on('finished', (event: cc.Event.EventCustom) => {
@@ -165,7 +160,7 @@ export default class EnemyClass extends cc.Component {
         })
     }
 
-    playAttackingSound() {
+    private playAttackingSound() {
         cc.audioEngine.playEffect(this.attackingSound, false);
     }
 

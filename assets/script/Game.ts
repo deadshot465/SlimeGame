@@ -22,8 +22,8 @@ export default class GameClass extends cc.Component {
     player: cc.Node = null;
 
     @property(cc.Label)
-    scoreLabel: cc.Label = null;
-    score = 0;
+    attackPointLabel: cc.Label = null;
+    attackPoint = 0;
     
     @property(cc.RichText)
     gameOverLabel: cc.RichText = null;
@@ -64,12 +64,12 @@ export default class GameClass extends cc.Component {
     warningNode: cc.Node = null;
 
     bossAppeared = false;
-    elapsedTime = 0.0;
-    ghostSpawned = false;
     enemyOriginalX = 300;
-    interval = 0.0;
+    private elapsedTime = 0.0;
+    private ghostSpawned = false;
+    private interval = 0.0;
 
-    spawnEnemy() {
+    private spawnEnemy() {
         let rand = Math.random();
         let ghost: cc.Node;
         let enemyType: EnemyType;
@@ -98,12 +98,12 @@ export default class GameClass extends cc.Component {
         this.ghostSpawned = true;
     }
 
-    getScore(score: number) {
-        this.score += score;
-        this.scoreLabel.string = `Attack: ${this.score}`;
+    getAttackPoint(score: number) {
+        this.attackPoint += score;
+        this.attackPointLabel.string = `Attack: ${this.attackPoint}`;
     }
 
-    clearAllProjectiles() {
+    private clearAllProjectiles() {
         let enemyProjectiles = this.node
         .getComponentsInChildren<EnemyProjectileClass>(EnemyProjectileClass);
         for (let projectile of enemyProjectiles) {
@@ -123,7 +123,7 @@ export default class GameClass extends cc.Component {
         }
     }
 
-    clearAllEnemies() {
+    private clearAllEnemies() {
         
         this.clearAllProjectiles();
     
@@ -144,7 +144,7 @@ export default class GameClass extends cc.Component {
         this.restartButton.active = true;
     }
 
-    playGameOverSound() {
+    private playGameOverSound() {
         //cc.audioEngine.playEffect(this.gameOverSound, false);
         cc.loader.loadRes('253886__themusicalnomad__negative-beeps', cc.AudioClip, (err, clip: cc.AudioClip) => {
             cc.audioEngine.playEffect(clip, false);
@@ -159,7 +159,7 @@ export default class GameClass extends cc.Component {
         this.editBox.active = true;
     }
 
-    playGameSuccessSound() {
+    private playGameSuccessSound() {
         //cc.audioEngine.playEffect(this.gameSuccessSound, false);
         cc.loader.loadRes('341985__unadamlar__goodresult', cc.AudioClip, (err, clip: cc.AudioClip) => {
             cc.audioEngine.playEffect(clip, false);
@@ -169,7 +169,7 @@ export default class GameClass extends cc.Component {
     async onRecordEntered(event: cc.Event, customEventData: any) {
         let name = this.editBox.getComponent<cc.EditBox>(cc.EditBox).string;
         let db = new DatabaseClass();
-        await db.writeData(name, this.score, Math.ceil(this.timePassed)).then((value) => {
+        await db.writeData(name, this.attackPoint, Math.ceil(this.timePassed)).then((value) => {
             console.log(`Resolved: ${value}`);
         }).catch((reason) => {
             console.error(`Rejected: ${reason}`);
@@ -177,7 +177,7 @@ export default class GameClass extends cc.Component {
         this.showScoreboard();
     }
 
-    async showScoreboard() {
+    private async showScoreboard() {
         this.editBox.active = false;
         let db = new DatabaseClass();
         await db.readData(this).then((value) => {
@@ -209,7 +209,7 @@ export default class GameClass extends cc.Component {
     }
 
     onRestartButtonClicked(event: cc.Event, customEventData: any) {
-        cc.director.loadScene('main');
+        cc.director.loadScene('start');
         this.gameOverLabel.enabled = false;
         this.restartButton.active = false;
         cc.director.resume();
@@ -258,7 +258,7 @@ export default class GameClass extends cc.Component {
         });
     }
 
-    playWarningTitle(): Promise<any> {
+    private playWarningTitle(): Promise<any> {
         return new Promise((resolve, reject) => {
             let animation = this.warningNode.getComponent<cc.Animation>(cc.Animation);
             animation.play();
@@ -274,7 +274,7 @@ export default class GameClass extends cc.Component {
         });
     }
 
-    showWarning(): Promise<any> {
+    private showWarning(): Promise<any> {
         return new Promise(async (resolve, reject) => {
             await this.playWarningTitle();
             resolve();

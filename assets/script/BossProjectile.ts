@@ -5,11 +5,11 @@ const {ccclass, property} = cc._decorator;
 @ccclass
 export default class BossProjectileClass extends cc.Component {
 
-    initialSpeed = 600;
-    speed = 0;
-    speedMultiplyFactor = 100;
+    private initialSpeed = 600;
+    private speed = 0;
+    private speedMultiplyFactor = 100;
 
-    MAX_RANGE = -1000;
+    private MAX_RANGE = -1000;
 
     enemyType: EnemyType = EnemyType.BOSS;
     isExist = false;

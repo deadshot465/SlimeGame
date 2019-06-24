@@ -1326,7 +1326,7 @@
     "_is3DNode": false,
     "groupIndex": 0,
     "showInEditor": false,
-    "_id": "c0TFwyvPZIm6E62LxaaaF9"
+    "_id": "eduKsd1+tH7blG9HR0+yGD"
   },
   {
     "__type__": "cc.Label",
@@ -1352,7 +1352,7 @@
     "_N$fontFamily": "Comic Sans MS",
     "_N$overflow": 0,
     "_N$cacheMode": 0,
-    "_id": "92sJ1toihFXqBfFBuo34LM"
+    "_id": "362eZPsXJMfqUhU6jtEdqi"
   },
   {
     "__type__": "cc.RichText",
@@ -4157,7 +4157,7 @@
     "player": {
       "__id__": 7
     },
-    "scoreLabel": {
+    "attackPointLabel": {
       "__id__": 27
     },
     "gameOverLabel": {

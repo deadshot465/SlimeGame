@@ -16,8 +16,9 @@ export default class PlayerClass extends cc.Component {
 
     @property(cc.Prefab)
     specialProjectile: cc.Prefab = null;
-    specialAttack = false;
-    specialUsedCount = 0;
+    private specialAttack = false;
+    private specialUsedCount = 0;
+
     specialAttackHit = {
         hit: false,
         value: -1
@@ -59,11 +60,11 @@ export default class PlayerClass extends cc.Component {
     })
     damagingSound: cc.AudioClip = null;
 
-    moveLeft = false;
-    moveRight = false;
-    moveUp = false;
-    moveDown = false;
-    fire = false;
+    private moveLeft = false;
+    private moveRight = false;
+    private moveUp = false;
+    private moveDown = false;
+    private fire = false;
 
     @property
     xSpeed = 0;
@@ -71,16 +72,16 @@ export default class PlayerClass extends cc.Component {
     @property
     ySpeed = 0;
 
-    xOffset = 40;
-    bottomYOffset = this.xOffset;
-    topYOffset = 230;
-    elapsedTime = 0.0;
-    isFired = false;
+    private xOffset = 40;
+    private bottomYOffset = this.xOffset;
+    private topYOffset = 230;
+    private elapsedTime = 0.0;
+    private isFired = false;
 
-    hp = 300;
-    damageRadius = 60;
+    private hp = 300;
+    private damageRadius = 60;
     
-    damageAnimation = new Array<cc.Animation>(4);
+    private damageAnimation = new Array<cc.Animation>(4);
 
     onKeyDown(event: any) {
         switch (event.keyCode) {
@@ -147,7 +148,13 @@ export default class PlayerClass extends cc.Component {
         }
     }
 
-    async playerDamage(other: cc.Node) {
+    setSpecialProjectile(projectileNo: number, enabled: boolean) {
+        this.playerProjectile = this.changedProjectiles[projectileNo];
+        this.specialAttackHit.hit = enabled;
+        this.specialAttackHit.value = projectileNo;
+    }
+
+    private async playerDamage(other: cc.Node) {
         
         if (!this.canvasNode.getComponent<GameClass>(GameClass).bossAppeared) {
             let component = 
@@ -184,7 +191,7 @@ export default class PlayerClass extends cc.Component {
         this.playerDamage(other.node);
     }
 
-    checkHp() {
+    private checkHp() {
         if (this.heart3.isValid) {
             if (this.hp < 250) {
                 let sprite = this.heart3.getComponent<cc.Sprite>(cc.Sprite);
@@ -223,7 +230,7 @@ export default class PlayerClass extends cc.Component {
         }
     }
 
-    showDamageAnimation(projectile: EnemyProjectileClass | EnemyClass | BossProjectileClass): Promise<any> {
+    private showDamageAnimation(projectile: EnemyProjectileClass | EnemyClass | BossProjectileClass): Promise<any> {
         switch (projectile.enemyType) {
             case EnemyType.WHITE:
                 return new Promise<any>((resolve, reject) => {
@@ -263,28 +270,28 @@ export default class PlayerClass extends cc.Component {
         }
     }
 
-    playAttackingSound() {
+    private playAttackingSound() {
         //cc.audioEngine.playEffect(this.attackingSound, false);
         cc.loader.loadRes('41530__jamius__slimeatk', cc.AudioClip, (err, clip: cc.AudioClip) => {
             cc.audioEngine.playEffect(clip, false);
         });
     }
 
-    playChangedAttackSound() {
+    private playChangedAttackSound() {
         //cc.audioEngine.playEffect(this.changedAttackSound, false);
         cc.loader.loadRes('391660__jeckkech__projectile', cc.AudioClip, (err, clip: cc.AudioClip) => {
             cc.audioEngine.playEffect(clip, false);
         });
     }
 
-    playDamagingSound() {
+    private playDamagingSound() {
         //cc.audioEngine.playEffect(this.damagingSound, false);
         cc.loader.loadRes('72624__anechoix__squish3', cc.AudioClip, (err, clip: cc.AudioClip) => {
             cc.audioEngine.playEffect(clip, false);
         });
     }
 
-    playCutscene(): Promise<any> {
+    private playCutscene(): Promise<any> {
         return new Promise((resolve, reject) => {
             this.canvasNode.getComponent<GameClass>(GameClass).playCutscene();
         });

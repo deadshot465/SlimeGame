@@ -6,7 +6,7 @@ export default class ProjectileClass extends cc.Component {
     @property
     xSpeed = 350;
 
-    MAX_RANGE = 1000;
+    private MAX_RANGE = 1000;
 
     isExist = false;
     isSpecial = false;
